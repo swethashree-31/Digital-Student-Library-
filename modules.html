@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Data Science Modules – Explore 5 comprehensive modules with embedded PDF viewers.">
+  <title>Modules – Data Science Digital Library</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪄</text></svg>">
+  <style>
+    /* ===== PDF Viewer Styles ===== */
+    .pdf-viewer-container {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(10, 5, 20, 0.6);
+      border: 1px solid rgba(211, 166, 37, 0.2);
+      margin-top: 1rem;
+    }
+
+    .pdf-viewer-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1rem;
+      background: linear-gradient(135deg, rgba(116, 0, 1, 0.3), rgba(10, 5, 20, 0.8));
+      border-bottom: 1px solid rgba(211, 166, 37, 0.15);
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .pdf-viewer-title {
+      font-size: 0.85rem;
+      color: #D3A625;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .pdf-viewer-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .pdf-viewer-actions a,
+    .pdf-viewer-actions button {
+      padding: 0.35rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      border: 1px solid rgba(211, 166, 37, 0.3);
+      background: rgba(211, 166, 37, 0.1);
+      color: #D3A625;
+    }
+
+    .pdf-viewer-actions a:hover,
+    .pdf-viewer-actions button:hover {
+      background: rgba(211, 166, 37, 0.25);
+      border-color: rgba(211, 166, 37, 0.5);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(211, 166, 37, 0.15);
+    }
+
+    .pdf-iframe-wrapper {
+      width: 100%;
+      height: 600px;
+      position: relative;
+    }
+
+    .pdf-iframe-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #1a1a2e;
+    }
+
+    .pdf-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #D3A625;
+      z-index: 1;
+      animation: pdfPulse 2s ease-in-out infinite;
+    }
+
+    .pdf-loading .loading-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.8rem;
+    }
+
+    @keyframes pdfPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Fullscreen modal for PDF */
+    .pdf-fullscreen-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 10000;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+
+    .pdf-fullscreen-overlay.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pdf-fullscreen-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .pdf-fullscreen-header h3 {
+      color: #D3A625;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .pdf-fullscreen-close {
+      background: rgba(211, 166, 37, 0.2);
+      border: 1px solid rgba(211, 166, 37, 0.4);
+      color: #D3A625;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .pdf-fullscreen-close:hover {
+      background: rgba(211, 166, 37, 0.35);
+    }
+
+    .pdf-fullscreen-body {
+      flex: 1;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .pdf-fullscreen-body iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    @media (max-width: 768px) {
+      .pdf-iframe-wrapper {
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page Load Overlay -->
+  <div id="page-load-overlay" class="page-load-overlay">
+    <span class="wand-icon">🪄✨</span>
+  </div>
+
+  <!-- Magical Background -->
+  <div id="magical-bg"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" role="navigation" aria-label="Main Navigation">
+    <a href="index.html" class="brand">
+      <span class="wand-emoji">🪄</span>
+      Digital Library
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="modules.html" class="active">Modules</a></li>
+      <li><a href="experiments.html">Experiments</a></li>
+      <li><a href="tools.html">Tools</a></li>
+    </ul>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <h1>📚 Data Science Modules</h1>
+    <p>"Every great wizard starts by opening a book."</p>
+    <div class="divider"><span>⚡</span></div>
+  </section>
+
+  <!-- Modules List -->
+  <div class="modules-container">
+
+    <!-- Module 1 -->
+    <div class="module-box reveal" id="module-1">
+      <div class="module-box-header" onclick="toggleModule(this)">
+        <h3>📖 Module 1 – Introduction to Data Science & Analytics</h3>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="module-box-content">
+        <div class="pdf-viewer-container">
+          <div class="pdf-viewer-toolbar">
+            <span class="pdf-viewer-title">📜 Module 1 — Introduction (10-Page Study Guide)</span>
+            <div class="pdf-viewer-actions">
+              <a href="pdfs/module1.pdf" download title="Download PDF">⬇ Download</a>
+              <button onclick="openFullscreen('pdfs/module1.pdf', 'Module 1 – Introduction to Data Science')" title="View Fullscreen">⛶ Fullscreen</button>
+            </div>
+          </div>
+          <div class="pdf-iframe-wrapper">
+            <div class="pdf-loading"><span class="loading-icon">📖</span>Loading PDF...</div>
+            <iframe src="pdfs/module1.pdf" title="Module 1 PDF" loading="lazy" onload="this.previousElementSibling.style.display='none'"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 2 -->
+    <div class="module-box reveal" id="module-2">
+      <div class="module-box-header" onclick="toggleModule(this)">
+        <h3>📊 Module 2 – Data Extraction & Preprocessing</h3>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="module-box-content">
+        <div class="pdf-viewer-container">
+          <div class="pdf-viewer-toolbar">
+            <span class="pdf-viewer-title">📜 Module 2 — Data Extraction (10-Page Study Guide)</span>
+            <div class="pdf-viewer-actions">
+              <a href="pdfs/module2.pdf" download title="Download PDF">⬇ Download</a>
+              <button onclick="openFullscreen('pdfs/module2.pdf', 'Module 2 – Data Extraction')" title="View Fullscreen">⛶ Fullscreen</button>
+            </div>
+          </div>
+          <div class="pdf-iframe-wrapper">
+            <div class="pdf-loading"><span class="loading-icon">📊</span>Loading PDF...</div>
+            <iframe src="pdfs/module2.pdf" title="Module 2 PDF" loading="lazy" onload="this.previousElementSibling.style.display='none'"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 3 -->
+    <div class="module-box reveal" id="module-3">
+      <div class="module-box-header" onclick="toggleModule(this)">
+        <h3>📈 Module 3 – Data Visualization</h3>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="module-box-content">
+        <div class="pdf-viewer-container">
+          <div class="pdf-viewer-toolbar">
+            <span class="pdf-viewer-title">📜 Module 3 — Data Visualization (10-Page Study Guide)</span>
+            <div class="pdf-viewer-actions">
+              <a href="pdfs/module3.pdf" download title="Download PDF">⬇ Download</a>
+              <button onclick="openFullscreen('pdfs/module3.pdf', 'Module 3 – Data Visualization')" title="View Fullscreen">⛶ Fullscreen</button>
+            </div>
+          </div>
+          <div class="pdf-iframe-wrapper">
+            <div class="pdf-loading"><span class="loading-icon">📈</span>Loading PDF...</div>
+            <iframe src="pdfs/module3.pdf" title="Module 3 PDF" loading="lazy" onload="this.previousElementSibling.style.display='none'"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 4 -->
+    <div class="module-box reveal" id="module-4">
+      <div class="module-box-header" onclick="toggleModule(this)">
+        <h3>🤖 Module 4 – Statistical Thinking</h3>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="module-box-content">
+        <div class="pdf-viewer-container">
+          <div class="pdf-viewer-toolbar">
+            <span class="pdf-viewer-title">📜 Module 4 — Statistical Thinking (10-Page Study Guide)</span>
+            <div class="pdf-viewer-actions">
+              <a href="pdfs/module4.pdf" download title="Download PDF">⬇ Download</a>
+              <button onclick="openFullscreen('pdfs/module4.pdf', 'Module 4 – Statistical Thinking')" title="View Fullscreen">⛶ Fullscreen</button>
+            </div>
+          </div>
+          <div class="pdf-iframe-wrapper">
+            <div class="pdf-loading"><span class="loading-icon">🤖</span>Loading PDF...</div>
+            <iframe src="pdfs/module4.pdf" title="Module 4 PDF" loading="lazy" onload="this.previousElementSibling.style.display='none'"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Module 5 -->
+    <div class="module-box reveal" id="module-5">
+      <div class="module-box-header" onclick="toggleModule(this)">
+        <h3>🧠 Module 5 – Time Series Analysis & Predictive Modeling</h3>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="module-box-content">
+        <div class="pdf-viewer-container">
+          <div class="pdf-viewer-toolbar">
+            <span class="pdf-viewer-title">📜 Module 5 — Time Series & Predictive Modeling (10-Page Study Guide)</span>
+            <div class="pdf-viewer-actions">
+              <a href="pdfs/module5.pdf" download title="Download PDF">⬇ Download</a>
+              <button onclick="openFullscreen('pdfs/module5.pdf', 'Module 5 – Time Series & Predictive Modeling')" title="View Fullscreen">⛶ Fullscreen</button>
+            </div>
+          </div>
+          <div class="pdf-iframe-wrapper">
+            <div class="pdf-loading"><span class="loading-icon">🧠</span>Loading PDF...</div>
+            <iframe src="pdfs/module5.pdf" title="Module 5 PDF" loading="lazy" onload="this.previousElementSibling.style.display='none'"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Fullscreen Overlay -->
+  <div class="pdf-fullscreen-overlay" id="pdf-fullscreen">
+    <div class="pdf-fullscreen-header">
+      <h3 id="fullscreen-title">Module PDF</h3>
+      <button class="pdf-fullscreen-close" onclick="closeFullscreen()">✕ Close</button>
+    </div>
+    <div class="pdf-fullscreen-body">
+      <iframe id="fullscreen-iframe" src="" title="Fullscreen PDF Viewer"></iframe>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-wand">⚡🪄⚡</div>
+    <p class="footer-line"><span>Your Name</span> · Data Science – Digital Library</p>
+    <p class="footer-line" style="font-size:0.75rem; margin-top:0.3rem;">Crafted with ✨ magic</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    // Auto-open module if linked from home page via hash
+    document.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const target = document.querySelector(hash);
+        if (target && target.classList.contains('module-box')) {
+          target.classList.add('open');
+          setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+        }
+      }
+    });
+
+    // Fullscreen PDF viewer
+    function openFullscreen(pdfPath, title) {
+      const overlay = document.getElementById('pdf-fullscreen');
+      const iframe = document.getElementById('fullscreen-iframe');
+      const titleEl = document.getElementById('fullscreen-title');
+      iframe.src = pdfPath;
+      titleEl.textContent = title;
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeFullscreen() {
+      const overlay = document.getElementById('pdf-fullscreen');
+      const iframe = document.getElementById('fullscreen-iframe');
+      overlay.classList.remove('active');
+      iframe.src = '';
+      document.body.style.overflow = '';
+    }
+
+    // Close fullscreen on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeFullscreen();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Data Science Digital Library – A Harry Potter themed college mini project showcasing modules, experiments, and data science tools.">
+  <title>Data Science – Digital Library</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Favicon: wand emoji fallback -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪄</text></svg>">
+</head>
+
+<body>
+
+  <!-- ========== PAGE LOAD OVERLAY ========== -->
+  <div id="page-load-overlay" class="page-load-overlay">
+    <span class="wand-icon">🪄✨</span>
+  </div>
+
+  <!-- ========== MAGICAL BACKGROUND ========== -->
+  <div id="magical-bg"></div>
+
+  <!-- ========== NAVBAR ========== -->
+  <nav class="navbar" role="navigation" aria-label="Main Navigation">
+    <a href="index.html" class="brand">
+      <span class="wand-emoji">🪄</span>
+      Digital Library
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="modules.html">Modules</a></li>
+      <li><a href="experiments.html">Experiments</a></li>
+      <li><a href="tools.html">Tools</a></li>
+    </ul>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <!-- Decorative Shield SVG (original, not copyrighted) -->
+    <div class="hero-shield">
+      <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#D3A625;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#9c7a1a;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <!-- Shield shape -->
+        <path d="M50 5 L90 25 L90 65 Q90 95 50 115 Q10 95 10 65 L10 25 Z" fill="none" stroke="url(#shieldGrad)"
+          stroke-width="3" />
+        <path d="M50 15 L80 30 L80 62 Q80 88 50 105 Q20 88 20 62 L20 30 Z" fill="rgba(116,0,1,0.3)" stroke="none" />
+        <!-- Decorative cross lines -->
+        <line x1="50" y1="25" x2="50" y2="100" stroke="#D3A625" stroke-width="1" opacity="0.5" />
+        <line x1="25" y1="55" x2="75" y2="55" stroke="#D3A625" stroke-width="1" opacity="0.5" />
+        <!-- Star in center -->
+        <text x="50" y="62" text-anchor="middle" font-size="22" fill="#D3A625">⚡</text>
+      </svg>
+    </div>
+    <h1>Data Science</h1>
+    <p class="subtitle">Subject: Digital Library</p>
+    <p class="tagline">~ "Knowledge is the most powerful magic" ~</p>
+    <div class="divider"><span>⚡</span></div>
+  </section>
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main class="main-content">
+    <!-- LEFT AREA -->
+    <div class="left-area">
+
+      <!-- ---- MODULES SECTION ---- -->
+      <section class="reveal">
+        <div class="section-heading">
+          <h2>📚 Modules</h2>
+          <a href="modules.html" class="view-more-btn">View More ➜</a>
+        </div>
+        <div class="card-grid">
+          <!-- Module 1 -->
+          <a href="modules.html#module-1" class="card fade-in-up" id="home-mod-1">
+            <span class="card-num">1</span>
+            <span class="card-icon">📖</span>
+            <h3>Module 1</h3>
+            <p>Introduction to Data Science & Analytics</p>
+          </a>
+          <!-- Module 2 -->
+          <a href="modules.html#module-2" class="card fade-in-up" id="home-mod-2">
+            <span class="card-num">2</span>
+            <span class="card-icon">📊</span>
+            <h3>Module 2</h3>
+            <p>Data Extraction & Preprocessing</p>
+          </a>
+          <!-- Module 3 -->
+          <a href="modules.html#module-3" class="card fade-in-up" id="home-mod-3">
+            <span class="card-num">3</span>
+            <span class="card-icon">📈</span>
+            <h3>Module 3</h3>
+            <p>Data Visualization</p>
+          </a>
+          <!-- Module 4 -->
+          <a href="modules.html#module-4" class="card fade-in-up" id="home-mod-4">
+            <span class="card-num">4</span>
+            <span class="card-icon">🤖</span>
+            <h3>Module 4</h3>
+            <p>Statistical Thinking</p>
+          </a>
+          <!-- Module 5 -->
+          <a href="modules.html#module-5" class="card fade-in-up" id="home-mod-5">
+            <span class="card-num">5</span>
+            <span class="card-icon">🧠</span>
+            <h3>Module 5</h3>
+            <p>Time Series Analysis & Predictive Modeling</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- ---- LAB EXPERIMENTS ---- -->
+      <section class="reveal">
+        <div class="section-heading">
+          <h2>🧪 Lab Experiments</h2>
+          <a href="experiments.html" class="view-more-btn">View All Experiments ➜</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar">
+      <div class="profile-card">
+        <!-- Photo -->
+        <div class="profile-photo-wrapper">
+          <div class="profile-photo profile-photo-img">🧙</div>
+          <button class="edit-photo-btn" id="edit-photo-btn" title="Upload your photo">✏️</button>
+          <input type="file" id="photo-input" accept="image/*" style="display:none;">
+        </div>
+
+        <!-- Editable Details -->
+        <h3><span class="detail-value" contenteditable="true" data-key="name">Your Name</span></h3>
+        <div class="profile-details">
+          <div class="detail-row">
+            <span class="detail-label">ID</span>
+            <span class="detail-value" contenteditable="true" data-key="id">24XYZABC001</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Section</span>
+            <span class="detail-value" contenteditable="true" data-key="section">A</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Department</span>
+            <span class="detail-value" contenteditable="true" data-key="department">Computer Science</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Subject</span>
+            <span class="detail-value" contenteditable="true" data-key="subject">Data Science</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Faculty</span>
+            <span class="detail-value" contenteditable="true" data-key="faculty">Prof. Dumbledore</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Designation</span>
+            <span class="detail-value" contenteditable="true" data-key="designation">Associate Professor</span>
+          </div>
+        </div>
+
+        <!-- Social Circles -->
+        <div class="social-circles">
+          <!-- 1. Previous Project -->
+          <a href="#" class="social-circle" title="Previous Project" target="_blank">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z" />
+            </svg>
+          </a>
+          <!-- 2. LinkedIn -->
+          <a href="https://linkedin.com" class="social-circle" title="LinkedIn" target="_blank">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </a>
+          <!-- 3. GitHub -->
+          <a href="https://github.com" class="social-circle" title="GitHub" target="_blank">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+            </svg>
+          </a>
+          <!-- 4. Instagram -->
+          <a href="https://instagram.com" class="social-circle" title="Instagram" target="_blank">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z" />
+            </svg>
+          </a>
+          <!-- 5. View More / About Me -->
+          <a href="about.html" class="social-circle" title="About Me">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+            </svg>
+          </a>
+        </div>
+
+      </div>
+    </aside>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer">
+    <div class="footer-wand">⚡🪄⚡</div>
+    <p class="footer-line">
+      <span class="detail-value" contenteditable="true" data-key="name">Your Name</span> · Data Science – Digital
+      Library
+    </p>
+    <p class="footer-line" style="font-size:0.75rem; margin-top:0.3rem;">
+      Crafted with ✨ magic
+    </p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+
+</html>

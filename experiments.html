@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Data Science Lab Experiments - Download lab programs with built-in Python interpreter for hands-on learning.">
+  <title>Experiments - Data Science Digital Library</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1FA84;</text></svg>">
+  <style>
+    .unit-section { margin-bottom: 2.5rem; }
+    .unit-title { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 1.2rem; padding-bottom: 0.6rem; border-bottom: 2px solid rgba(211,166,37,0.2); }
+    .unit-title h2 { font-size: 1.4rem; color: #D3A625; margin: 0; }
+    .unit-badge { background: linear-gradient(135deg, rgba(116,0,1,0.4), rgba(211,166,37,0.2)); color: #D3A625; padding: 0.25rem 0.7rem; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid rgba(211,166,37,0.3); }
+
+    .experiments-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem; padding: 1rem 1.5rem; background: linear-gradient(135deg, rgba(20,10,40,0.6), rgba(30,15,50,0.4)); border: 1px solid rgba(211,166,37,0.12); border-radius: 12px; }
+    .stat-item { display: flex; align-items: center; gap: 0.5rem; }
+    .stat-number { font-size: 1.4rem; font-weight: 800; color: #D3A625; }
+    .stat-label { font-size: 0.8rem; color: rgba(232,213,163,0.6); text-transform: uppercase; letter-spacing: 0.04em; }
+
+    /* Experiment card */
+    .exp-card { background: linear-gradient(145deg, rgba(20,10,40,0.8), rgba(30,15,50,0.6)); border: 1px solid rgba(211,166,37,0.12); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; position: relative; overflow: hidden; transition: all 0.4s ease; }
+    .exp-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, #D3A625, transparent); opacity: 0; transition: opacity 0.4s ease; }
+    .exp-card:hover::before { opacity: 1; }
+    .exp-card:hover { border-color: rgba(211,166,37,0.3); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+
+    .exp-card-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .exp-card-title-area { display: flex; align-items: center; gap: 0.7rem; flex: 1; }
+    .exp-number { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, rgba(211,166,37,0.2), rgba(116,0,1,0.3)); border: 1px solid rgba(211,166,37,0.3); color: #D3A625; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
+    .exp-card-title { font-size: 1.15rem; color: #e8d5a3; font-weight: 700; line-height: 1.3; }
+
+    .exp-btn-group { display: flex; gap: 0.5rem; flex-shrink: 0; }
+    .exp-download-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; border: 1px solid rgba(211,166,37,0.3); background: linear-gradient(135deg, rgba(211,166,37,0.25), rgba(116,0,1,0.3)); color: #D3A625; }
+    .exp-download-btn:hover { background: linear-gradient(135deg, rgba(211,166,37,0.4), rgba(116,0,1,0.4)); border-color: rgba(211,166,37,0.5); transform: translateY(-1px); box-shadow: 0 4px 15px rgba(211,166,37,0.15); }
+    .exp-view-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; border: 1px solid rgba(41,98,255,0.3); background: linear-gradient(135deg, rgba(41,98,255,0.15), rgba(41,98,255,0.05)); color: #6e9eff; }
+    .exp-view-btn:hover { background: linear-gradient(135deg, rgba(41,98,255,0.3), rgba(41,98,255,0.15)); border-color: rgba(41,98,255,0.5); transform: translateY(-1px); }
+    .exp-file-badge { display: inline-flex; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: rgba(41,98,255,0.15); color: #6e9eff; border: 1px solid rgba(41,98,255,0.3); margin-left: 0.5rem; }
+
+    /* Sub-parts */
+    .sub-parts { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.6rem; margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(211,166,37,0.08); }
+    .sub-part { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.8rem; border-radius: 8px; background: rgba(211,166,37,0.04); border: 1px solid rgba(211,166,37,0.06); transition: all 0.3s ease; }
+    .sub-part:hover { background: rgba(211,166,37,0.08); border-color: rgba(211,166,37,0.15); }
+    .sub-label { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 4px; border-radius: 6px; background: linear-gradient(135deg, rgba(211,166,37,0.15), rgba(116,0,1,0.2)); border: 1px solid rgba(211,166,37,0.2); color: #D3A625; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; }
+    .sub-text { font-size: 0.85rem; color: rgba(232,213,163,0.75); line-height: 1.3; }
+
+    /* ===== Python Interpreter ===== */
+    .interpreter-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(211,166,37,0.08);
+    }
+
+    .interpreter-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.6rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .interpreter-title {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #4ec9b0;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .interpreter-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .run-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid rgba(78,201,176,0.4);
+      background: linear-gradient(135deg, rgba(78,201,176,0.2), rgba(78,201,176,0.08));
+      color: #4ec9b0;
+      transition: all 0.3s ease;
+    }
+
+    .run-btn:hover {
+      background: linear-gradient(135deg, rgba(78,201,176,0.35), rgba(78,201,176,0.15));
+      box-shadow: 0 2px 10px rgba(78,201,176,0.2);
+      transform: translateY(-1px);
+    }
+
+    .run-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .clear-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(232,213,163,0.15);
+      background: rgba(232,213,163,0.05);
+      color: rgba(232,213,163,0.5);
+      transition: all 0.3s ease;
+    }
+
+    .clear-btn:hover {
+      background: rgba(232,213,163,0.1);
+      color: rgba(232,213,163,0.8);
+    }
+
+    .code-editor {
+      width: 100%;
+      min-height: 150px;
+      max-height: 400px;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(78,201,176,0.15);
+      background: rgba(0,0,0,0.4);
+      color: #d4d4d4;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.3s ease;
+      tab-size: 4;
+    }
+
+    .code-editor:focus {
+      border-color: rgba(78,201,176,0.4);
+      box-shadow: 0 0 10px rgba(78,201,176,0.08);
+    }
+
+    .code-editor::placeholder {
+      color: rgba(232,213,163,0.3);
+    }
+
+    .output-area {
+      margin-top: 0.5rem;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(211,166,37,0.1);
+      background: rgba(0,0,0,0.5);
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: #d4d4d4;
+      min-height: 40px;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      display: none;
+    }
+
+    .output-area.has-output { display: block; }
+    .output-area .output-label { color: rgba(78,201,176,0.6); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.3rem; display: block; }
+    .output-area .error { color: #f44747; }
+    .output-area .success { color: #4ec9b0; }
+
+    .pyodide-status {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.7rem;
+      color: rgba(232,213,163,0.4);
+    }
+
+    .pyodide-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(232,213,163,0.3);
+    }
+
+    .pyodide-dot.ready { background: #4ec9b0; }
+    .pyodide-dot.loading { background: #D3A625; animation: pulse 1s ease infinite; }
+
+    @keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    /* Fullscreen viewer modal */
+    .doc-fullscreen-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 10000; padding: 1rem; box-sizing: border-box; }
+    .doc-fullscreen-overlay.active { display: flex; flex-direction: column; }
+    .doc-fullscreen-header { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 1rem; margin-bottom: 0.5rem; }
+    .doc-fullscreen-header h3 { color: #D3A625; font-size: 1rem; margin: 0; }
+    .doc-fullscreen-close { background: rgba(211,166,37,0.2); border: 1px solid rgba(211,166,37,0.4); color: #D3A625; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; }
+    .doc-fullscreen-close:hover { background: rgba(211,166,37,0.35); }
+    .doc-fullscreen-body { flex: 1; border-radius: 8px; overflow: hidden; position: relative; }
+    .doc-fullscreen-body iframe { width: 100%; height: 100%; border: none; background: #1a1a2e; }
+    .doc-rendered-content { width: 100%; height: 100%; overflow-y: auto; padding: 2rem; box-sizing: border-box; background: #1e1e2e; color: #d4d4d4; font-family: 'Segoe UI', sans-serif; font-size: 0.95rem; line-height: 1.7; }
+    .doc-rendered-content h1, .doc-rendered-content h2, .doc-rendered-content h3 { color: #D3A625; margin-top: 1.2rem; }
+    .doc-rendered-content p { margin: 0.5rem 0; }
+    .doc-rendered-content table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    .doc-rendered-content td, .doc-rendered-content th { border: 1px solid rgba(211,166,37,0.2); padding: 0.5rem; }
+    .doc-rendered-content code { background: rgba(0,0,0,0.4); padding: 0.15rem 0.4rem; border-radius: 4px; font-family: Consolas, monospace; color: #4ec9b0; }
+    .doc-loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #D3A625; font-size: 1rem; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; }
+    .doc-loading-spinner { width: 36px; height: 36px; border: 3px solid rgba(211,166,37,0.2); border-top-color: #D3A625; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 768px) {
+      .sub-parts { grid-template-columns: 1fr; }
+      .exp-card-header { flex-direction: column; align-items: flex-start; }
+      .exp-btn-group { width: 100%; }
+      .exp-btn-group a, .exp-btn-group button { flex: 1; justify-content: center; }
+      .interpreter-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="page-load-overlay" class="page-load-overlay">
+    <span class="wand-icon">&#x1FA84;&#x2728;</span>
+  </div>
+  <div id="magical-bg"></div>
+
+  <nav class="navbar" role="navigation" aria-label="Main Navigation">
+    <a href="index.html" class="brand">
+      <span class="wand-emoji">&#x1FA84;</span>
+      Digital Library
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="modules.html">Modules</a></li>
+      <li><a href="experiments.html" class="active">Experiments</a></li>
+      <li><a href="tools.html">Tools</a></li>
+    </ul>
+  </nav>
+
+  <section class="page-header">
+    <h1>&#x1F9EA; Lab Experiments</h1>
+    <p>"The best way to learn magic is to practice it."</p>
+    <div class="divider"><span>&#x26A1;</span></div>
+  </section>
+
+  <div class="experiments-container">
+
+    <div class="experiments-stats reveal">
+      <div class="stat-item">
+        <span class="stat-number">10</span>
+        <span class="stat-label">Programs</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-number">10</span>
+        <span class="stat-label">DOCX Files</span>
+      </div>
+      <div class="stat-item">
+        <span class="pyodide-status"><span class="pyodide-dot" id="pyodide-indicator"></span> <span id="pyodide-status-text">Python Loading...</span></span>
+      </div>
+    </div>
+
+    <div class="unit-section">
+      <div class="unit-title reveal">
+        <h2>&#x1F4D9; Lab Experiments</h2>
+        <span class="unit-badge">10 Programs</span>
+      </div>
+
+      <!-- Program 1 -->
+      <div class="exp-card reveal" id="prog-1">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">1</div>
+            <div class="exp-card-title">Working with Different Data Formats using Pandas</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DataScience_Program1.docx','Program 1 - Data Formats')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DataScience_Program1.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">1a</span><span class="sub-text">Reading and Writing CSV Data</span></div>
+          <div class="sub-part"><span class="sub-label">1b</span><span class="sub-text">Reading and Writing JSON Data</span></div>
+          <div class="sub-part"><span class="sub-label">1c</span><span class="sub-text">Reading and Writing Excel Files</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(1)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(1)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-1" placeholder="# Paste your Python code here and click Run...&#10;import pandas as pd&#10;print('Hello from Program 1!')" spellcheck="false"></textarea>
+          <div class="output-area" id="output-1"><span class="output-label">Output</span><span id="output-text-1"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 2 -->
+      <div class="exp-card reveal" id="prog-2">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">2</div>
+            <div class="exp-card-title">Interacting with Web APIs and Databases</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DataScience_Program2.docx','Program 2 - Web APIs')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DataScience_Program2.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">2a</span><span class="sub-text">GitHub Issues to DataFrame</span></div>
+          <div class="sub-part"><span class="sub-label">2b</span><span class="sub-text">SQLite Database Operations</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(2)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(2)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-2" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-2"><span class="output-label">Output</span><span id="output-text-2"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 3 -->
+      <div class="exp-card reveal" id="prog-3">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">3</div>
+            <div class="exp-card-title">Data Cleaning and Preparation</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DataScience_Program3.docx','Program 3 - Data Cleaning')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DataScience_Program3.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">3a</span><span class="sub-text">Handle Missing Data</span></div>
+          <div class="sub-part"><span class="sub-label">3b</span><span class="sub-text">Data Transformation</span></div>
+          <div class="sub-part"><span class="sub-label">3c</span><span class="sub-text">Outlier Detection</span></div>
+          <div class="sub-part"><span class="sub-label">3d</span><span class="sub-text">Regex for Text Manipulation</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(3)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(3)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-3" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-3"><span class="output-label">Output</span><span id="output-text-3"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 4 -->
+      <div class="exp-card reveal" id="prog-4">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">4</div>
+            <div class="exp-card-title">Data Wrangling</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DS_Program4.docx','Program 4 - Data Wrangling')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DS_Program4.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">4a</span><span class="sub-text">Hierarchical Indexing</span></div>
+          <div class="sub-part"><span class="sub-label">4b</span><span class="sub-text">Stack and Unstack</span></div>
+          <div class="sub-part"><span class="sub-label">4c</span><span class="sub-text">Merge and Combine</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(4)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(4)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-4" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-4"><span class="output-label">Output</span><span id="output-text-4"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 5 -->
+      <div class="exp-card reveal" id="prog-5">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">5</div>
+            <div class="exp-card-title">Data Visualization with Matplotlib and Seaborn</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DS_Program5.docx','Program 5 - Visualization')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DS_Program5.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">5a</span><span class="sub-text">Line Plot</span></div>
+          <div class="sub-part"><span class="sub-label">5b</span><span class="sub-text">Bar Plots</span></div>
+          <div class="sub-part"><span class="sub-label">5c</span><span class="sub-text">Histogram and Density Plot</span></div>
+          <div class="sub-part"><span class="sub-label">5d</span><span class="sub-text">Scatter Plot</span></div>
+          <div class="sub-part"><span class="sub-label">5e</span><span class="sub-text">Box Plot</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(5)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(5)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-5" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-5"><span class="output-label">Output</span><span id="output-text-5"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 6 -->
+      <div class="exp-card reveal" id="prog-6">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">6</div>
+            <div class="exp-card-title">Time Series Analysis</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DS_Program6.docx','Program 6 - Time Series')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DS_Program6.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">6a</span><span class="sub-text">Create Time Series</span></div>
+          <div class="sub-part"><span class="sub-label">6b</span><span class="sub-text">Time Zone Conversion</span></div>
+          <div class="sub-part"><span class="sub-label">6c</span><span class="sub-text">Period Arithmetic and Conversion</span></div>
+          <div class="sub-part"><span class="sub-label">6d</span><span class="sub-text">Resampling</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(6)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(6)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-6" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-6"><span class="output-label">Output</span><span id="output-text-6"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 7 -->
+      <div class="exp-card reveal" id="prog-7">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">7</div>
+            <div class="exp-card-title">Data Aggregation</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DS_Program7.docx','Program 7 - Aggregation')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DS_Program7.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">7a</span><span class="sub-text">GroupBy Single Key</span></div>
+          <div class="sub-part"><span class="sub-label">7b</span><span class="sub-text">GroupBy Multiple Keys</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(7)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(7)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-7" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-7"><span class="output-label">Output</span><span id="output-text-7"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 8 -->
+      <div class="exp-card reveal" id="prog-8">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">8</div>
+            <div class="exp-card-title">Web Scraping using Beautiful Soup</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DS_Program8.docx','Program 8 - Web Scraping')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DS_Program8.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">8a</span><span class="sub-text">Scrape Amazon Reviews</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(8)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(8)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-8" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-8"><span class="output-label">Output</span><span id="output-text-8"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 9 -->
+      <div class="exp-card reveal" id="prog-9">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">9</div>
+            <div class="exp-card-title">Case Study: Customer Personality Analysis</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DS_Program9.docx','Program 9 - Customer Analysis')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DS_Program9.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">9a</span><span class="sub-text">KMeans Clustering on Mall Customers Dataset</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(9)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(9)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-9" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-9"><span class="output-label">Output</span><span id="output-text-9"></span></div>
+        </div>
+      </div>
+
+      <!-- Program 10 -->
+      <div class="exp-card reveal" id="prog-10">
+        <div class="exp-card-header">
+          <div class="exp-card-title-area">
+            <div class="exp-number">10</div>
+            <div class="exp-card-title">Case Study: Text Emotion Detection</div>
+            <span class="exp-file-badge">DOCX</span>
+          </div>
+          <div class="exp-btn-group">
+            <button onclick="viewDoc('experiments_zip/DS Programs/DS_Program10.docx','Program 10 - Emotion Detection')" class="exp-view-btn">&#x1F441; View</button>
+            <a href="experiments_zip/DS Programs/DS_Program10.docx" download class="exp-download-btn">&#x2B07; Download</a>
+          </div>
+        </div>
+        <div class="sub-parts">
+          <div class="sub-part"><span class="sub-label">10a</span><span class="sub-text">Naive Bayes Text Classification</span></div>
+        </div>
+        <div class="interpreter-section">
+          <div class="interpreter-header">
+            <div class="interpreter-title">&#x1F40D; Python Interpreter</div>
+            <div class="interpreter-actions">
+              <button class="run-btn" onclick="runCode(10)">&#x25B6; Run</button>
+              <button class="clear-btn" onclick="clearCode(10)">Clear</button>
+            </div>
+          </div>
+          <textarea class="code-editor" id="code-10" placeholder="# Paste your Python code here and click Run..." spellcheck="false"></textarea>
+          <div class="output-area" id="output-10"><span class="output-label">Output</span><span id="output-text-10"></span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Fullscreen Document Viewer Modal -->
+  <div class="doc-fullscreen-overlay" id="doc-viewer-overlay">
+    <div class="doc-fullscreen-header">
+      <h3 id="doc-viewer-title">Document Viewer</h3>
+      <button class="doc-fullscreen-close" onclick="closeDocViewer()">&#x2716; Close</button>
+    </div>
+    <div class="doc-fullscreen-body">
+      <div class="doc-loading" id="doc-loading">
+        <div class="doc-loading-spinner"></div>
+        <span>Loading document...</span>
+      </div>
+      <iframe id="doc-viewer-iframe" src="" title="Document Viewer" style="display:none;"></iframe>
+      <div class="doc-rendered-content" id="doc-rendered-content"></div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-wand">&#x26A1;&#x1FA84;&#x26A1;</div>
+    <p class="footer-line"><span>Your Name</span> &#xB7; Data Science &#x2013; Digital Library</p>
+    <p class="footer-line" style="font-size:0.75rem; margin-top:0.3rem;">Crafted with &#x2728; magic</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+
+  <!-- Pyodide - Python in the browser -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
+
+  <script>
+    // ===== Pyodide Python Interpreter =====
+    let pyodide = null;
+    let pyodideReady = false;
+    let pyodideLoading = false;
+
+    async function loadPyodideEngine() {
+      if (pyodideLoading || pyodideReady) return;
+      pyodideLoading = true;
+
+      const indicator = document.getElementById('pyodide-indicator');
+      const statusText = document.getElementById('pyodide-status-text');
+      indicator.className = 'pyodide-dot loading';
+      statusText.textContent = 'Loading Python...';
+
+      try {
+        pyodide = await loadPyodide({
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.24.1/full/"
+        });
+
+        // Pre-load common packages
+        statusText.textContent = 'Loading packages...';
+        await pyodide.loadPackage(['numpy', 'pandas']);
+
+        pyodideReady = true;
+        indicator.className = 'pyodide-dot ready';
+        statusText.textContent = 'Python Ready';
+      } catch (err) {
+        indicator.className = 'pyodide-dot';
+        statusText.textContent = 'Failed to load';
+        console.error('Pyodide load error:', err);
+      }
+      pyodideLoading = false;
+    }
+
+    // Start loading Pyodide when page loads
+    document.addEventListener('DOMContentLoaded', loadPyodideEngine);
+
+    async function runCode(num) {
+      const codeEl = document.getElementById('code-' + num);
+      const outputArea = document.getElementById('output-' + num);
+      const outputText = document.getElementById('output-text-' + num);
+      const code = codeEl.value.trim();
+
+      if (!code) {
+        outputArea.classList.add('has-output');
+        outputText.innerHTML = '<span class="error">Please enter some code to run.</span>';
+        return;
+      }
+
+      if (!pyodideReady) {
+        outputArea.classList.add('has-output');
+        outputText.innerHTML = '<span class="error">Python is still loading... please wait a moment and try again.</span>';
+        await loadPyodideEngine();
+        return;
+      }
+
+      // Show running state
+      outputArea.classList.add('has-output');
+      outputText.innerHTML = '<span class="success">Running...</span>';
+
+      try {
+        // Capture stdout
+        pyodide.runPython(`
+import sys
+from io import StringIO
+_captured_output = StringIO()
+sys.stdout = _captured_output
+sys.stderr = _captured_output
+`);
+
+        // Run user code
+        await pyodide.runPythonAsync(code);
+
+        // Get output
+        const output = pyodide.runPython(`
+_result = _captured_output.getvalue()
+sys.stdout = sys.__stdout__
+sys.stderr = sys.__stderr__
+_result
+`);
+
+        if (output && output.trim()) {
+          outputText.innerHTML = '<span class="success">' + escapeHtml(output) + '</span>';
+        } else {
+          outputText.innerHTML = '<span class="success">Code executed successfully (no output).</span>';
+        }
+      } catch (err) {
+        // Reset stdout on error
+        try {
+          pyodide.runPython(`
+import sys
+sys.stdout = sys.__stdout__
+sys.stderr = sys.__stderr__
+`);
+        } catch(e) {}
+
+        const errorMsg = err.message || String(err);
+        outputText.innerHTML = '<span class="error">' + escapeHtml(errorMsg) + '</span>';
+      }
+    }
+
+    function clearCode(num) {
+      document.getElementById('code-' + num).value = '';
+      const outputArea = document.getElementById('output-' + num);
+      const outputText = document.getElementById('output-text-' + num);
+      outputArea.classList.remove('has-output');
+      outputText.innerHTML = '';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Tab key support in code editors
+    document.querySelectorAll('.code-editor').forEach(editor => {
+      editor.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+          this.selectionStart = this.selectionEnd = start + 4;
+        }
+        // Ctrl+Enter to run
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          const num = this.id.replace('code-', '');
+          runCode(parseInt(num));
+        }
+      });
+    });
+
+    // ===== Document Viewer (mammoth.js) =====
+    function viewDoc(filePath, title) {
+      const overlay = document.getElementById('doc-viewer-overlay');
+      const titleEl = document.getElementById('doc-viewer-title');
+      const loading = document.getElementById('doc-loading');
+      const content = document.getElementById('doc-rendered-content');
+
+      titleEl.textContent = title;
+      loading.style.display = 'flex';
+      content.innerHTML = '';
+      overlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      // Fetch the DOCX file and render with mammoth.js
+      fetch(filePath)
+        .then(response => {
+          if (!response.ok) throw new Error('File not found');
+          return response.arrayBuffer();
+        })
+        .then(arrayBuffer => {
+          return mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
+        })
+        .then(result => {
+          loading.style.display = 'none';
+          content.innerHTML = result.value;
+        })
+        .catch(err => {
+          loading.style.display = 'none';
+          content.innerHTML = '<p style="color:#f44747;text-align:center;margin-top:2rem;">Could not load document.<br><small>' + err.message + '</small><br><br><small>Tip: If viewing locally, try opening via a local server (e.g., Live Server extension in VS Code).</small></p>';
+        });
+    }
+
+    function closeDocViewer() {
+      const overlay = document.getElementById('doc-viewer-overlay');
+      const content = document.getElementById('doc-rendered-content');
+      overlay.classList.remove('active');
+      content.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeDocViewer();
+    });
+
+    // Hash-based scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      if (hash) {
+        const target = document.querySelector(hash);
+        if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+      }
+    });
+  </script>
+</body>
+</html>
